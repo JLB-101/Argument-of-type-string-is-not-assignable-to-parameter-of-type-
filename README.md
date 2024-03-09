@@ -10,39 +10,61 @@ link: https://github.com/prisma/prisma/issues/20171
 
 # Code: this.$on("beforeExit") doesn't work anymore on 5.0.0 #20171 
 import { INestApplication,Injectable, OnModuleInit } from '@nestjs/common';
+
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
+
   async onModuleInit() {
+  
     await this.$connect();
+    
   }
 
   // code that cause error  this.$on("beforeExit") doesn't work anymore on 5.0.0 #20171 
+  
   async enableShutdownHooks(app: INestApplication) {
+  
    this.$on('beforeExit', async () => {
+   
     await app.close();
+    
    });
+   
   }
+  
 }
 
 #  code: code with error or bug resolved
 
 import { INestApplication,Injectable, OnModuleInit } from '@nestjs/common';
+
 import { PrismaClient } from '@prisma/client';
 
+
 @Injectable()
+
 export class PrismaService extends PrismaClient implements OnModuleInit {
+
   async onModuleInit() {
+  
     await this.$connect();
+    
   }
 
   async enableShutdownHooks(app: INestApplication) {
+  
     process.on('beforeExit', () => {
+    
       app.close();
+      
     });
+    
   }
+  
 }
 
 # now test
+
 :npm run start:dev
